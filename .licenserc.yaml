@@ -22,5 +22,6 @@ header:
 
   paths-ignore:
     - 'spyre_inference/_version.py'
+    - 'tests/model_ops/utils/torchop_yaml.py'
     - '.venv/**'
     - '.cache/**'
