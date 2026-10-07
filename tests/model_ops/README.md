@@ -33,10 +33,10 @@ The collector needs `PyYAML`, `regex` and `python-dotenv` in the environment.
 
 ## Notes
 
-- The generated YAML is not committed here. It is the raw collector output and includes ops that the
-  torch-spyre test run skips as unregistered (`torch.ops.spyre.*`, `torch_spyre._monkey_patch.*`,
-  `torch.ops.aten.*`, `torch._C._autograd.*`, and a few others such as `torch.unflatten` and
-  `torch.index_select`).
+- `gemma-4-26B-A4B-it.yaml` is the raw output of this driver (image `spyre-inference:ci-cd-tech-preview-v3`:
+  55 ops traced, 51 with test configs, 1127 cases). It includes ops that the torch-spyre test run skips
+  as unregistered (`torch.ops.spyre.*`, `torch_spyre._monkey_patch.*`, `torch.ops.aten.*`,
+  `torch._C._autograd.*`, and a few others such as `torch.unflatten` and `torch.index_select`).
 - `<model>_spyre.yaml` (the normalized copy) is not written (`supress_spyre=True`).
 - `VLLM_ENABLE_V1_MULTIPROCESSING=0` keeps the engine in the collector's process; do not use
   `--enforce-eager`, which compiles nothing.
