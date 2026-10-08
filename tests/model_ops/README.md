@@ -1,42 +1,41 @@
-# Model-ops YAML generation
+# Model-ops YAML
 
-Generates the torch-spyre op-test YAML (`test_suite_config`, one case per distinct op signature)
-for a model loaded through spyre-inference, so the recorded ops are the ones this plugin compiles
-and not stock Hugging Face code.
+Op-level test configs (`test_suite_config`, one case per distinct op signature) recorded while a model
+runs through spyre-inference, so the ops are the ones this plugin compiles and not the ones in stock
+Hugging Face modeling code. The generator scripts live in
+[hf-adapters](https://github.com/torch-spyre/hf-adapters) (`utils/model_ops/`); only the generated YAML
+is kept here.
 
-`utils/torchop_yaml.py` is a copy of
-[`utils/model_ops/utils/torchop_yaml.py`](https://github.com/torch-spyre/hf-adapters/blob/585c093/utils/model_ops/utils/torchop_yaml.py)
-in hf-adapters at commit `585c093`, with two changes:
+## Files
 
-- `_extract_meta_info` treats `FakeScriptObject` / `ScriptObject` values (the opaque attention
-  handle passed to `unified_attention_with_output`) as "no shape" instead of raising.
-- `_compile_fx` forwards its arguments to `compile_fx` untouched, so it no longer collides with
-  torch-spyre's `compile_fx` wrapper (`got multiple values for argument 'decompositions'`).
+| File | Model | Cases | Distinct ops |
+|---|---|---|---|
+| `gemma-4-26B-A4B-it.yaml` | `google/gemma-4-26B-A4B-it` | 1090 | 45 |
 
-## Run
+## How `gemma-4-26B-A4B-it.yaml` was generated
 
-Use the spyre-inference image on a Spyre host (one card is enough at TP=1). Only one process may
-use the card at a time.
+Driver: `utils/model_ops/models/gemma4-26b-a4b/run_spyre_inference.py` in hf-adapters, added by
+[hf-adapters#651](https://github.com/torch-spyre/hf-adapters/pull/651) (generated from its head commit
+`f977452`).
 
-```bash
-source /app/.venv/bin/activate
-export HF_TOKEN=<token>   # google/gemma-4-26B-A4B-it is gated
-cd tests/model_ops
-rm -rf /tmp/torchinductor_* ~/.cache/vllm/torch_compile_cache
-python -m models.gemma4-26b-a4b.run_spyre_inference 2>&1 | tee run.log
-```
+- Image: `icr.io/ai_sw_accel/2.0/prod/spyre-inference:ci-cd-tech-preview-v3`, vLLM 0.28.0, one Spyre
+  card, tensor parallel size 1, float16, default compilation (`STOCK_TORCH_COMPILE`).
+- Engine settings: `max_model_len=3072`, `max_num_seqs=8`; one request, prompt
+  `Say hello in one word.`, 8 new tokens (the parameter header at the top of the file records batch 1,
+  6 input tokens, 8 output tokens).
+- Collector output: 49 ops traced, 45 with test configs, 1090 test cases.
 
-The YAML is written to the current directory as `gemma-4-26B-A4B-it.yaml`. The first run downloads
-the weights and compiles a graph per layer type and bucket, so it is slow; the log is large.
-
-The collector needs `PyYAML`, `regex` and `python-dotenv` in the environment.
+To regenerate, run the driver from `utils/model_ops/` inside the spyre-inference image on a Spyre host
+(see the hf-adapters `utils/model_ops/README.md`) and copy the resulting `gemma-4-26B-A4B-it.yaml` here.
 
 ## Notes
 
-- `gemma-4-26B-A4B-it.yaml` is the raw output of this driver (image `spyre-inference:ci-cd-tech-preview-v3`:
-  55 ops traced, 51 with test configs, 1127 cases). It includes ops that the torch-spyre test run skips
-  as unregistered (`torch.ops.spyre.*`, `torch_spyre._monkey_patch.*`, `torch.ops.aten.*`,
-  `torch._C._autograd.*`, and a few others such as `torch.unflatten` and `torch.index_select`).
-- `<model>_spyre.yaml` (the normalized copy) is not written (`supress_spyre=True`).
-- `VLLM_ENABLE_V1_MULTIPROCESSING=0` keeps the engine in the collector's process; do not use
-  `--enforce-eager`, which compiles nothing.
+- float16 is expected: spyre-inference forces float16 on Spyre, so these cases are float16. The YAML in
+  torch-spyre was recorded from stock Hugging Face on CUDA with bfloat16.
+- torch-spyre internal ops (`torch.ops.spyre.*`, `torch_spyre._monkey_patch.*`, `torch._C._autograd.*`)
+  are skipped by the collector and do not appear in the file.
+- The file is otherwise raw collector output. It still includes lowered `torch.ops.aten.*` cases (35) and
+  other ops that the torch-spyre test run skips as unregistered (for example `torch.unflatten` and
+  `torch.index_select`).
+- Attention (`unified_attention_with_output`) and MoE (`moe_forward`) are traced but yield no test case,
+  because their arguments include opaque objects.

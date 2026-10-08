@@ -1,3 +1,10 @@
+#%%% start parameters
+#parameters : {
+# batch_size : 1
+# input_token_length : 6
+# output_token_length : 8
+#}
+#%%% end parameters
 test_suite_config:
   labels:
     - trunk
@@ -85,34 +92,6 @@ test_suite_config:
           edits:
             ops:
               include:
-                - name: torch._C._autograd._get_data_attr
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [2816]
-                          stride: [1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                  description: 'site-packages/vllm/model_executor/layers/layernorm.py:83 in forward_native, code: self.weight.data if self.pass_weight else None,'
-                  tags:
-                    - torch._C._autograd._get_data_attr.1
-                - name: torch_spyre._monkey_patch.spyre_to
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [512, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float32
-                  description: 'site-packages/vllm/ir/ops/layernorm.py:15 in rms_norm, code: x = x.to(torch.float32)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_to.1
                 - name: torch.pow
                   sample_inputs_func:
                     args:
@@ -327,19 +306,6 @@ test_suite_config:
                   tags:
                     - constant
                     - torch.unflatten.1
-                - name: torch._C._autograd._get_data_attr
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [256]
-                          stride: [1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                  description: 'site-packages/vllm/model_executor/layers/layernorm.py:83 in forward_native, code: self.weight.data if self.pass_weight else None,'
-                  tags:
-                    - torch._C._autograd._get_data_attr.2
                 - name: torch.to
                   sample_inputs_func:
                     args:
@@ -822,7 +788,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -920,7 +886,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -987,17 +953,6 @@ test_suite_config:
                   tags:
                     - constant
                     - torch.to.9
-                - name: torch_spyre._monkey_patch.spyre_empty
-                  sample_inputs_func:
-                    args:
-                      - value: (512, 4096)
-                    kwargs:
-                      dtype: torch.float16
-                      device: spyre:0
-                  description: 'site-packages/spyre_inference/v1/attention/attn_layer.py:108 in _spyre_attention_forward, code: output = torch.empty(output_shape, dtype=output_dtype, device=query.device)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_empty.1
                 - name: torch.Tensor.view
                   sample_inputs_func:
                     args:
@@ -1618,21 +1573,6 @@ test_suite_config:
                   description: 'site-packages/spyre_inference/custom_ops/linear.py:64 in spyre_linear_t, code: out = torch.matmul(x, weight_t)'
                   tags:
                     - torch.matmul.4
-                - name: torch_spyre._monkey_patch.spyre_to
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: []
-                          stride: []
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float16
-                  description: 'site-packages/vllm/model_executor/models/gemma4.py:302 in forward, code: x = x * self.root_size.to(x.dtype)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_to.2
                 - name: torch.mul
                   sample_inputs_func:
                     args:
@@ -1653,21 +1593,6 @@ test_suite_config:
                   description: 'site-packages/vllm/model_executor/models/gemma4.py:302 in forward, code: x = x * self.root_size.to(x.dtype)'
                   tags:
                     - torch.mul.11
-                - name: torch_spyre._monkey_patch.spyre_to
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [2816]
-                          stride: [1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float16
-                  description: 'site-packages/vllm/model_executor/models/gemma4.py:303 in forward, code: x = x * self.scale.to(x.dtype)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_to.3
                 - name: torch.nn.functional.linear
                   sample_inputs_func:
                     args:
@@ -1710,21 +1635,6 @@ test_suite_config:
                   description: 'site-packages/vllm/model_executor/models/gemma4.py:745 in forward, code: hidden_states = hidden_states * self.layer_scalar'
                   tags:
                     - torch.mul.12
-                - name: torch_spyre._monkey_patch.spyre_to
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [512, 128]
-                          stride: [128, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float32
-                  description: 'site-packages/spyre_inference/moe.py:167 in _probs, code: return torch.softmax(router_logits.to(reduce_dtype), dim=-1).to(router_logits.dtype)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_to.4
                 - name: torch.softmax
                   sample_inputs_func:
                     args:
@@ -1814,31 +1724,6 @@ test_suite_config:
                   tags:
                     - constant
                     - torch.getitem.13
-                - name: torch.ops.spyre.keep_by_index
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [512, 128]
-                          stride: [128, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - tensor:
-                          shape: [512, 8]
-                          stride: [8, 1]
-                          storage_offset: 0
-                          dtype: torch.int64
-                          device: spyre:0
-                          init: randint
-                          init_args:
-                            high: 1000
-                      - value: -1
-                      - value: 0.0
-                  description: 'site-packages/spyre_inference/moe.py:231 in _moe_persistent_routing, code: weights = torch.ops.spyre.keep_by_index('
-                  tags:
-                    - constant
-                    - torch.ops.spyre.keep_by_index.1
                 - name: torch.sum
                   sample_inputs_func:
                     args:
@@ -1848,7 +1733,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                       - value: -1
                     kwargs:
                       keepdim: true
@@ -2116,7 +2001,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: 0
                   description: 'site-packages/spyre_inference/moe.py:296 in _moe_persistent, code: return (torch.matmul(activated, down) * route).sum(dim=0)'
@@ -2201,19 +2086,6 @@ test_suite_config:
                   tags:
                     - constant
                     - torch.unflatten.4
-                - name: torch._C._autograd._get_data_attr
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [512]
-                          stride: [1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                  description: 'site-packages/vllm/model_executor/layers/layernorm.py:83 in forward_native, code: self.weight.data if self.pass_weight else None,'
-                  tags:
-                    - torch._C._autograd._get_data_attr.3
                 - name: torch.to
                   sample_inputs_func:
                     args:
@@ -2651,7 +2523,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -2716,7 +2588,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -2783,17 +2655,6 @@ test_suite_config:
                   tags:
                     - constant
                     - torch.to.17
-                - name: torch_spyre._monkey_patch.spyre_empty
-                  sample_inputs_func:
-                    args:
-                      - value: (512, 8192)
-                    kwargs:
-                      dtype: torch.float16
-                      device: spyre:0
-                  description: 'site-packages/spyre_inference/v1/attention/attn_layer.py:108 in _spyre_attention_forward, code: output = torch.empty(output_shape, dtype=output_dtype, device=query.device)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_empty.2
                 - name: torch.Tensor.view
                   sample_inputs_func:
                     args:
@@ -3028,22 +2889,6 @@ test_suite_config:
                   description: 'site-packages/spyre_inference/custom_ops/linear.py:64 in spyre_linear_t, code: out = torch.matmul(x, weight_t)'
                   tags:
                     - torch.matmul.9
-                - name: torch.ops.spyre.to_dtype_d2d
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [512, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float32
-                      - value: 0
-                  description: 'site-packages/torch_spyre/ops/eager.py:51 in call_op, code: return op(*args, **kwargs)'
-                  tags:
-                    - constant
-                    - torch.ops.spyre.to_dtype_d2d.1
                 - name: torch.ops.aten.pow.Tensor_Scalar
                   sample_inputs_func:
                     args:
@@ -3128,23 +2973,6 @@ test_suite_config:
                   tags:
                     - fp32operation
                     - torch.ops.aten.mul.Tensor.1
-                - name: torch.ops.spyre.to_dtype_d2d
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [512, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float32
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float16
-                      - value: 0
-                  description: 'site-packages/torch_spyre/ops/eager.py:51 in call_op, code: return op(*args, **kwargs)'
-                  tags:
-                    - fp32operation
-                    - constant
-                    - torch.ops.spyre.to_dtype_d2d.2
                 - name: torch.ops.aten.mul.Tensor
                   sample_inputs_func:
                     args:
@@ -3222,21 +3050,6 @@ test_suite_config:
                   description: 'site-packages/torch_spyre/ops/eager.py:51 in call_op, code: return op(*args, **kwargs)'
                   tags:
                     - torch.ops.aten.mul.Tensor.3
-                - name: torch_spyre._monkey_patch.spyre_to
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [8, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float32
-                  description: 'site-packages/vllm/ir/ops/layernorm.py:15 in rms_norm, code: x = x.to(torch.float32)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_to.5
                 - name: torch.pow
                   sample_inputs_func:
                     args:
@@ -3933,7 +3746,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -4031,7 +3844,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -4098,17 +3911,6 @@ test_suite_config:
                   tags:
                     - constant
                     - torch.to.26
-                - name: torch_spyre._monkey_patch.spyre_empty
-                  sample_inputs_func:
-                    args:
-                      - value: (8, 4096)
-                    kwargs:
-                      dtype: torch.float16
-                      device: spyre:0
-                  description: 'site-packages/spyre_inference/v1/attention/attn_layer.py:108 in _spyre_attention_forward, code: output = torch.empty(output_shape, dtype=output_dtype, device=query.device)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_empty.3
                 - name: torch.Tensor.view
                   sample_inputs_func:
                     args:
@@ -4776,21 +4578,6 @@ test_suite_config:
                   description: 'site-packages/vllm/model_executor/models/gemma4.py:745 in forward, code: hidden_states = hidden_states * self.layer_scalar'
                   tags:
                     - torch.mul.33
-                - name: torch_spyre._monkey_patch.spyre_to
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [8, 128]
-                          stride: [128, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float32
-                  description: 'site-packages/spyre_inference/moe.py:167 in _probs, code: return torch.softmax(router_logits.to(reduce_dtype), dim=-1).to(router_logits.dtype)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_to.6
                 - name: torch.softmax
                   sample_inputs_func:
                     args:
@@ -4880,31 +4667,6 @@ test_suite_config:
                   tags:
                     - constant
                     - torch.getitem.30
-                - name: torch.ops.spyre.keep_by_index
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [8, 128]
-                          stride: [128, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - tensor:
-                          shape: [8, 8]
-                          stride: [8, 1]
-                          storage_offset: 0
-                          dtype: torch.int64
-                          device: spyre:0
-                          init: randint
-                          init_args:
-                            high: 1000
-                      - value: -1
-                      - value: 0.0
-                  description: 'site-packages/spyre_inference/moe.py:231 in _moe_persistent_routing, code: weights = torch.ops.spyre.keep_by_index('
-                  tags:
-                    - constant
-                    - torch.ops.spyre.keep_by_index.2
                 - name: torch.sum
                   sample_inputs_func:
                     args:
@@ -4914,7 +4676,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                       - value: -1
                     kwargs:
                       keepdim: true
@@ -5182,7 +4944,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: 0
                   description: 'site-packages/spyre_inference/moe.py:296 in _moe_persistent, code: return (torch.matmul(activated, down) * route).sum(dim=0)'
@@ -5704,7 +5466,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -5769,7 +5531,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -5836,17 +5598,6 @@ test_suite_config:
                   tags:
                     - constant
                     - torch.to.34
-                - name: torch_spyre._monkey_patch.spyre_empty
-                  sample_inputs_func:
-                    args:
-                      - value: (8, 8192)
-                    kwargs:
-                      dtype: torch.float16
-                      device: spyre:0
-                  description: 'site-packages/spyre_inference/v1/attention/attn_layer.py:108 in _spyre_attention_forward, code: output = torch.empty(output_shape, dtype=output_dtype, device=query.device)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_empty.4
                 - name: torch.Tensor.view
                   sample_inputs_func:
                     args:
@@ -6066,22 +5817,6 @@ test_suite_config:
                   description: 'site-packages/spyre_inference/custom_ops/linear.py:64 in spyre_linear_t, code: out = torch.matmul(x, weight_t)'
                   tags:
                     - torch.matmul.18
-                - name: torch.ops.spyre.to_dtype_d2d
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [8, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float32
-                      - value: 0
-                  description: 'site-packages/torch_spyre/ops/eager.py:51 in call_op, code: return op(*args, **kwargs)'
-                  tags:
-                    - constant
-                    - torch.ops.spyre.to_dtype_d2d.3
                 - name: torch.ops.aten.pow.Tensor_Scalar
                   sample_inputs_func:
                     args:
@@ -6166,23 +5901,6 @@ test_suite_config:
                   tags:
                     - fp32operation
                     - torch.ops.aten.mul.Tensor.4
-                - name: torch.ops.spyre.to_dtype_d2d
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [8, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float32
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float16
-                      - value: 0
-                  description: 'site-packages/torch_spyre/ops/eager.py:51 in call_op, code: return op(*args, **kwargs)'
-                  tags:
-                    - fp32operation
-                    - constant
-                    - torch.ops.spyre.to_dtype_d2d.4
                 - name: torch.ops.aten.mul.Tensor
                   sample_inputs_func:
                     args:
@@ -6260,21 +5978,6 @@ test_suite_config:
                   description: 'site-packages/torch_spyre/ops/eager.py:51 in call_op, code: return op(*args, **kwargs)'
                   tags:
                     - torch.ops.aten.mul.Tensor.6
-                - name: torch_spyre._monkey_patch.spyre_to
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [4, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float32
-                  description: 'site-packages/vllm/ir/ops/layernorm.py:15 in rms_norm, code: x = x.to(torch.float32)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_to.7
                 - name: torch.pow
                   sample_inputs_func:
                     args:
@@ -6971,7 +6674,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -7069,7 +6772,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -7136,17 +6839,6 @@ test_suite_config:
                   tags:
                     - constant
                     - torch.to.43
-                - name: torch_spyre._monkey_patch.spyre_empty
-                  sample_inputs_func:
-                    args:
-                      - value: (4, 4096)
-                    kwargs:
-                      dtype: torch.float16
-                      device: spyre:0
-                  description: 'site-packages/spyre_inference/v1/attention/attn_layer.py:108 in _spyre_attention_forward, code: output = torch.empty(output_shape, dtype=output_dtype, device=query.device)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_empty.5
                 - name: torch.Tensor.view
                   sample_inputs_func:
                     args:
@@ -8013,7 +7705,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                       - value: -1
                     kwargs:
                       keepdim: true
@@ -8426,7 +8118,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: 1
                   description: 'site-packages/spyre_inference/moe.py:221 in _moe_gathered, code: return (expert_out * weights[..., None]).sum(dim=1)'
@@ -9159,7 +8851,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -9224,7 +8916,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -9291,17 +8983,6 @@ test_suite_config:
                   tags:
                     - constant
                     - torch.to.57
-                - name: torch_spyre._monkey_patch.spyre_empty
-                  sample_inputs_func:
-                    args:
-                      - value: (4, 8192)
-                    kwargs:
-                      dtype: torch.float16
-                      device: spyre:0
-                  description: 'site-packages/spyre_inference/v1/attention/attn_layer.py:108 in _spyre_attention_forward, code: output = torch.empty(output_shape, dtype=output_dtype, device=query.device)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_empty.6
                 - name: torch.Tensor.view
                   sample_inputs_func:
                     args:
@@ -9521,22 +9202,6 @@ test_suite_config:
                   description: 'site-packages/spyre_inference/custom_ops/linear.py:64 in spyre_linear_t, code: out = torch.matmul(x, weight_t)'
                   tags:
                     - torch.matmul.23
-                - name: torch.ops.spyre.to_dtype_d2d
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [4, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float32
-                      - value: 0
-                  description: 'site-packages/torch_spyre/ops/eager.py:51 in call_op, code: return op(*args, **kwargs)'
-                  tags:
-                    - constant
-                    - torch.ops.spyre.to_dtype_d2d.5
                 - name: torch.ops.aten.pow.Tensor_Scalar
                   sample_inputs_func:
                     args:
@@ -9621,23 +9286,6 @@ test_suite_config:
                   tags:
                     - fp32operation
                     - torch.ops.aten.mul.Tensor.7
-                - name: torch.ops.spyre.to_dtype_d2d
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [4, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float32
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float16
-                      - value: 0
-                  description: 'site-packages/torch_spyre/ops/eager.py:51 in call_op, code: return op(*args, **kwargs)'
-                  tags:
-                    - fp32operation
-                    - constant
-                    - torch.ops.spyre.to_dtype_d2d.6
                 - name: torch.ops.aten.mul.Tensor
                   sample_inputs_func:
                     args:
@@ -9715,21 +9363,6 @@ test_suite_config:
                   description: 'site-packages/torch_spyre/ops/eager.py:51 in call_op, code: return op(*args, **kwargs)'
                   tags:
                     - torch.ops.aten.mul.Tensor.9
-                - name: torch_spyre._monkey_patch.spyre_to
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [2, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float32
-                  description: 'site-packages/vllm/ir/ops/layernorm.py:15 in rms_norm, code: x = x.to(torch.float32)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_to.8
                 - name: torch.pow
                   sample_inputs_func:
                     args:
@@ -10426,7 +10059,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -10524,7 +10157,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -10591,17 +10224,6 @@ test_suite_config:
                   tags:
                     - constant
                     - torch.to.66
-                - name: torch_spyre._monkey_patch.spyre_empty
-                  sample_inputs_func:
-                    args:
-                      - value: (2, 4096)
-                    kwargs:
-                      dtype: torch.float16
-                      device: spyre:0
-                  description: 'site-packages/spyre_inference/v1/attention/attn_layer.py:108 in _spyre_attention_forward, code: output = torch.empty(output_shape, dtype=output_dtype, device=query.device)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_empty.7
                 - name: torch.Tensor.view
                   sample_inputs_func:
                     args:
@@ -11831,7 +11453,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -11896,7 +11518,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -11963,17 +11585,6 @@ test_suite_config:
                   tags:
                     - constant
                     - torch.to.73
-                - name: torch_spyre._monkey_patch.spyre_empty
-                  sample_inputs_func:
-                    args:
-                      - value: (2, 8192)
-                    kwargs:
-                      dtype: torch.float16
-                      device: spyre:0
-                  description: 'site-packages/spyre_inference/v1/attention/attn_layer.py:108 in _spyre_attention_forward, code: output = torch.empty(output_shape, dtype=output_dtype, device=query.device)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_empty.8
                 - name: torch.Tensor.view
                   sample_inputs_func:
                     args:
@@ -12193,22 +11804,6 @@ test_suite_config:
                   description: 'site-packages/spyre_inference/custom_ops/linear.py:64 in spyre_linear_t, code: out = torch.matmul(x, weight_t)'
                   tags:
                     - torch.matmul.28
-                - name: torch.ops.spyre.to_dtype_d2d
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [2, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float32
-                      - value: 0
-                  description: 'site-packages/torch_spyre/ops/eager.py:51 in call_op, code: return op(*args, **kwargs)'
-                  tags:
-                    - constant
-                    - torch.ops.spyre.to_dtype_d2d.7
                 - name: torch.ops.aten.pow.Tensor_Scalar
                   sample_inputs_func:
                     args:
@@ -12293,23 +11888,6 @@ test_suite_config:
                   tags:
                     - fp32operation
                     - torch.ops.aten.mul.Tensor.10
-                - name: torch.ops.spyre.to_dtype_d2d
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [2, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float32
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float16
-                      - value: 0
-                  description: 'site-packages/torch_spyre/ops/eager.py:51 in call_op, code: return op(*args, **kwargs)'
-                  tags:
-                    - fp32operation
-                    - constant
-                    - torch.ops.spyre.to_dtype_d2d.8
                 - name: torch.ops.aten.mul.Tensor
                   sample_inputs_func:
                     args:
@@ -12387,21 +11965,6 @@ test_suite_config:
                   description: 'site-packages/torch_spyre/ops/eager.py:51 in call_op, code: return op(*args, **kwargs)'
                   tags:
                     - torch.ops.aten.mul.Tensor.12
-                - name: torch_spyre._monkey_patch.spyre_to
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [1, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float32
-                  description: 'site-packages/vllm/ir/ops/layernorm.py:15 in rms_norm, code: x = x.to(torch.float32)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_to.9
                 - name: torch.pow
                   sample_inputs_func:
                     args:
@@ -13098,7 +12661,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -13196,7 +12759,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -13263,17 +12826,6 @@ test_suite_config:
                   tags:
                     - constant
                     - torch.to.82
-                - name: torch_spyre._monkey_patch.spyre_empty
-                  sample_inputs_func:
-                    args:
-                      - value: (1, 4096)
-                    kwargs:
-                      dtype: torch.float16
-                      device: spyre:0
-                  description: 'site-packages/spyre_inference/v1/attention/attn_layer.py:108 in _spyre_attention_forward, code: output = torch.empty(output_shape, dtype=output_dtype, device=query.device)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_empty.9
                 - name: torch.Tensor.view
                   sample_inputs_func:
                     args:
@@ -13938,21 +13490,6 @@ test_suite_config:
                   description: 'site-packages/vllm/model_executor/models/gemma4.py:745 in forward, code: hidden_states = hidden_states * self.layer_scalar'
                   tags:
                     - torch.mul.94
-                - name: torch_spyre._monkey_patch.spyre_to
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [1, 128]
-                          stride: [128, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float32
-                  description: 'site-packages/spyre_inference/moe.py:167 in _probs, code: return torch.softmax(router_logits.to(reduce_dtype), dim=-1).to(router_logits.dtype)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_to.10
                 - name: torch.matmul
                   sample_inputs_func:
                     args:
@@ -14469,7 +14006,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -14534,7 +14071,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: -2
                   description: 'site-packages/spyre_inference/custom_ops/rotary_embedding.py:67 in _rotate_neox_2x2, code: out = (rot.unsqueeze(1) * x_pairs.unsqueeze(-3)).sum(dim=-2)'
@@ -14601,17 +14138,6 @@ test_suite_config:
                   tags:
                     - constant
                     - torch.to.89
-                - name: torch_spyre._monkey_patch.spyre_empty
-                  sample_inputs_func:
-                    args:
-                      - value: (1, 8192)
-                    kwargs:
-                      dtype: torch.float16
-                      device: spyre:0
-                  description: 'site-packages/spyre_inference/v1/attention/attn_layer.py:108 in _spyre_attention_forward, code: output = torch.empty(output_shape, dtype=output_dtype, device=query.device)'
-                  tags:
-                    - constant
-                    - torch_spyre._monkey_patch.spyre_empty.10
                 - name: torch.Tensor.view
                   sample_inputs_func:
                     args:
@@ -14831,22 +14357,6 @@ test_suite_config:
                   description: 'site-packages/spyre_inference/custom_ops/linear.py:64 in spyre_linear_t, code: out = torch.matmul(x, weight_t)'
                   tags:
                     - torch.matmul.33
-                - name: torch.ops.spyre.to_dtype_d2d
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [1, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float32
-                      - value: 0
-                  description: 'site-packages/torch_spyre/ops/eager.py:51 in call_op, code: return op(*args, **kwargs)'
-                  tags:
-                    - constant
-                    - torch.ops.spyre.to_dtype_d2d.9
                 - name: torch.ops.aten.pow.Tensor_Scalar
                   sample_inputs_func:
                     args:
@@ -14931,23 +14441,6 @@ test_suite_config:
                   tags:
                     - fp32operation
                     - torch.ops.aten.mul.Tensor.13
-                - name: torch.ops.spyre.to_dtype_d2d
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [1, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float32
-                          device: spyre:0
-                          init: rand
-                      - value: torch.float16
-                      - value: 0
-                  description: 'site-packages/torch_spyre/ops/eager.py:51 in call_op, code: return op(*args, **kwargs)'
-                  tags:
-                    - fp32operation
-                    - constant
-                    - torch.ops.spyre.to_dtype_d2d.10
                 - name: torch.ops.aten.mul.Tensor
                   sample_inputs_func:
                     args:
@@ -16231,7 +15724,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: 0
                   description: 'site-packages/spyre_inference/v1/attention/ops/batched_decode_head_major.py:81 in _merge_entry_local, code: merged_sum = torch.sum(weight * tile_sum, dim=0)'
@@ -16266,7 +15759,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: 0
                   description: 'site-packages/spyre_inference/v1/attention/ops/batched_decode_head_major.py:82 in _merge_entry_local, code: merged_out = torch.sum(weight * tile_output, dim=0)'
@@ -16480,7 +15973,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: 0
                   description: 'site-packages/spyre_inference/v1/attention/ops/batched_decode_head_major.py:81 in _merge_entry_local, code: merged_sum = torch.sum(weight * tile_sum, dim=0)'
@@ -16515,7 +16008,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: 0
                   description: 'site-packages/spyre_inference/v1/attention/ops/batched_decode_head_major.py:82 in _merge_entry_local, code: merged_out = torch.sum(weight * tile_output, dim=0)'
@@ -18338,7 +17831,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: 0
                   description: 'site-packages/spyre_inference/v1/attention/ops/batched_decode_head_major.py:81 in _merge_entry_local, code: merged_sum = torch.sum(weight * tile_sum, dim=0)'
@@ -18373,7 +17866,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: 0
                   description: 'site-packages/spyre_inference/v1/attention/ops/batched_decode_head_major.py:82 in _merge_entry_local, code: merged_out = torch.sum(weight * tile_output, dim=0)'
@@ -18587,7 +18080,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: 0
                   description: 'site-packages/spyre_inference/v1/attention/ops/batched_decode_head_major.py:81 in _merge_entry_local, code: merged_sum = torch.sum(weight * tile_sum, dim=0)'
@@ -18622,7 +18115,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: 0
                   description: 'site-packages/spyre_inference/v1/attention/ops/batched_decode_head_major.py:82 in _merge_entry_local, code: merged_out = torch.sum(weight * tile_output, dim=0)'
@@ -18818,7 +18311,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: 0
                   description: 'site-packages/spyre_inference/v1/attention/ops/batched_decode_head_major.py:81 in _merge_entry_local, code: merged_sum = torch.sum(weight * tile_sum, dim=0)'
@@ -18853,7 +18346,7 @@ test_suite_config:
                           storage_offset: 0
                           dtype: torch.float16
                           device: spyre:0
-                          init: rand
+                          init: xavier
                     kwargs:
                       dim: 0
                   description: 'site-packages/spyre_inference/v1/attention/ops/batched_decode_head_major.py:82 in _merge_entry_local, code: merged_out = torch.sum(weight * tile_output, dim=0)'
@@ -19842,49 +19335,3 @@ test_suite_config:
                   tags:
                     - constant
                     - torch.unflatten.108
-                - name: torch.ops.spyre.copy_from_d2d
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [6, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - tensor:
-                          shape: [6, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - value: 0
-                      - value: 0
-                  description: 'site-packages/torch_spyre/ops/eager.py:51 in call_op, code: return op(*args, **kwargs)'
-                  tags:
-                    - constant
-                    - torch.ops.spyre.copy_from_d2d.1
-                - name: torch.ops.spyre.copy_from_d2d
-                  sample_inputs_func:
-                    args:
-                      - tensor:
-                          shape: [1, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - tensor:
-                          shape: [1, 2816]
-                          stride: [2816, 1]
-                          storage_offset: 0
-                          dtype: torch.float16
-                          device: spyre:0
-                          init: rand
-                      - value: 0
-                      - value: 0
-                  description: 'site-packages/torch_spyre/ops/eager.py:51 in call_op, code: return op(*args, **kwargs)'
-                  tags:
-                    - constant
-                    - torch.ops.spyre.copy_from_d2d.2

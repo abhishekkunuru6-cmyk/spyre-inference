@@ -196,8 +196,6 @@ exclude = ["spyre_inference/__init__.py"]
 [tool.ruff]
 # Use widescreen monitors 😎😎😎
 line-length = 100
-# vendored from hf-adapters; kept byte-for-byte except for the fixes listed in tests/model_ops/README.md
-extend-exclude = ["tests/model_ops/utils/torchop_yaml.py"]
 
 [tool.ruff.lint.per-file-ignores]
 "spyre_inference/version.py" = ["F401"]
@@ -259,8 +257,6 @@ dout = "dout"
 indicies = "indicies"
 subtile = "subtile"
 arange = "arange"
-# upstream hf-adapters spelling of the collector parameter (tests/model_ops/utils/torchop_yaml.py)
-supress = "supress"
 
 [tool.typos.files]
 # SVGs are generated (and full of compressed/escaped text that trips false
